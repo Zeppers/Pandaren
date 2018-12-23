@@ -37,9 +37,10 @@ function Game(id, name, genre){
     this.name = name;
     this.genre = genre;
 }
-function Admin(email, name, password){
+function Admin(email, name, password, events){
     this.email = email;
     this.name = name;
     this.password = password;
+    this.events = events;
 }
 
