@@ -10,11 +10,74 @@ var con = mysql.createConnection({
 con.connect();
 
 app.get('/games',async (req,res)=>{
-    res.json()
+    try{
+        con.query("select * from games",(err,rows)=>{
+            res.status(200).send(JSON.stringify(rows));
+        });
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).send(JSON.stringify({message:'server error!'}));
+    }
 });
 app.get('/games/:id',async (req,res)=>{
-
+    try{
+        con.query("select * from games where id="+req.params.id,(err,rows)=>{
+            let game = rows[0];
+            if(game)
+                res.status(200).send(JSON.stringify(game));
+            else
+                res.status(404).send(JSON.stringify({message:'not found!'}));
+        })
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).send(JSON.stringify({message:'server error!'}));
+    }
 });
+app.post('/games',async (req,res)=>{
+    
+});
+app.put('/games/:id',async (req,res)=>{
+    
+});
+app.delete('/games/:id', async (req,res)=>{
+    try{
+        con.query("delete from games where id="+req.params.id,(err,rows)=>{
+            let game = rows[0];
+            if(game)
+                res.status(202).send(JSON.stringify({message:'accepted!'}));
+            else
+                res.status(404).send(JSON.stringify({message:'not found!'}));
+        });
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).send(JSON.stringify({message:'server error!'}));
+    }
+});
+
+app.get('/events',async (req,res)=>{
+    try{
+        con.query("select * from events",(err,rows)=>{
+            res.status(200).send(JSON.stringify(rows));
+        });
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).send(JSON.stringify({message:'server error!'}));
+    }
+});
+
+app.get('/events/:id', async (req,res)=>{
+    con.query("select * from events where id="+req.params.id,(err,rows)=>{
+        let event = rows[0];
+        if(rows)
+            res.status(200).send(JSON.stringify(event));
+        else
+            res.status(404).send(JSON.stringify({message:'not found!'}));
+    })
+})
 
 
 app.listen(8000,()=>{
