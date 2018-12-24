@@ -7,6 +7,64 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <label id="label1">id</label>
+    <input id="input1">
+    <br>
+    <label id="label2">name</label>
+    <input id="input2">
+    <br>
+    <label id="label3">genre</label>
+    <input id="input3">
+    <br>
+    <button id="button1">post games</button>
+    <button id="button2">put games</button>
+    <button id="button3">delete games</button>
+    <button id="button4">post games</button>
+    <script>
+        var http = new XMLHttpRequest();
+        var game={};
+        
+        function takeGame(){
+            game.id=document.querySelector("#input1").value;
+            game.name = document.querySelector("#input2").value;
+            game.genre = document.querySelector("#input3").value;
+        }
+        document.querySelector("#button1").addEventListener('click',()=>{
+            http.open('POST','http://localhost:8000/games',true);
+            http.setRequestHeader('Content-type','application/json');
+            takeGame();
+            http.send(JSON.stringify(game));
+
+            http.addEventListener('readystatechange',()=>{
+            if(http.readyState==4){
+                console.log(JSON.parse(http.response));
+            }
+        })
+        });
+        document.querySelector("#button2").addEventListener('click',()=>{
+            takeGame();
+            http.open('PUT','http://localhost:8000/games/:'+game.id,true);
+            http.setRequestHeader('Content-type','application/json');
+            
+            http.send(JSON.stringify(game));
+            http.addEventListener('readystatechange',()=>{
+                if(http.readyState==4){
+                console.log(JSON.parse(http.response));
+            }
+            })
+        });
+        document.querySelector("#button3").addEventListener('click',()=>{
+            takeGame();
+            http.open('DELETE','http://localhost:8000/games/11',true);
+            http.setRequestHeader('Content-type','application/json');
+            
+            http.send();
+            http.addEventListener('readystatechange',()=>{
+                if(http.readyState==4){
+                console.log(JSON.parse(http.response));
+            }
+            })
+        });
+    </script>
 </body>
 </html>
