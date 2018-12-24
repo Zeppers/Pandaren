@@ -8,7 +8,7 @@ var con = mysql.createConnection({
     database:'tehnologiiweb'
 });
 con.connect();
-
+//GAMES ROUTE/////////////////////////////////////////////////////////
 app.get('/games',async (req,res)=>{
     try{
         con.query("select * from games",(err,rows)=>{
@@ -36,10 +36,35 @@ app.get('/games/:id',async (req,res)=>{
     }
 });
 app.post('/games',async (req,res)=>{
-    
+    try{
+        let game = JSON.parse(req.body);
+        if(game)
+            {
+                con.query("insert into games values(null,'"+game.name+"','"+game.genre+"')")
+                res.status(201).send(JSON.stringify({message:'created!'}));
+            }
+        else
+            res.status(400).send(JSON.stringify({message:'failed!'}));
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).send(JSON.stringify({message:'server error!'}));
+    }
 });
 app.put('/games/:id',async (req,res)=>{
-    
+    try{
+        let game = JSON.parse(req.body);
+        if(game){
+            con.query("update games set name='"+game.name+"', genre='"+game.genre+"' where id="+req.params.id);
+            res.status(201).send(JSON.stringify({message:'updated!'}));
+        }
+        else
+            res.status(400).send(JSON.stringify({message:'failed!'}));
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).send(JSON.stringify({message:'server error!'}));
+    }
 });
 app.delete('/games/:id', async (req,res)=>{
     try{
@@ -56,7 +81,7 @@ app.delete('/games/:id', async (req,res)=>{
         res.status(500).send(JSON.stringify({message:'server error!'}));
     }
 });
-
+//EVENTS ROUTE///////////////////////////////////////////////////////////
 app.get('/events',async (req,res)=>{
     try{
         con.query("select * from events",(err,rows)=>{
