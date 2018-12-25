@@ -17,11 +17,12 @@ var con = mysql.createConnection({
 });
 
 con.connect();
+
 //GAMES ROUTE/////////////////////////////////////////////////////////
 app.get('/games',async (req,res)=>{
-        con.query("select * from games",(err,rows)=>{
-            res.status(200).send(JSON.stringify(rows));
-        });
+    con.query("select * from games",(err,rows)=>{
+        res.status(200).send(JSON.stringify(rows));
+    })
 });
 app.get('/games/:id',async (req,res)=>{
         con.query("select * from games where id="+req.params.id,(err,rows)=>{
@@ -31,6 +32,7 @@ app.get('/games/:id',async (req,res)=>{
                 game = gameDB;
                 con.query("select * from images where id="+gameDB.id_image,(err,rows)=>{
                     game.image = rows[0];
+                    delete game.id_image;
                     res.status(200).send(JSON.stringify(game));
                 })
             }  
@@ -38,6 +40,12 @@ app.get('/games/:id',async (req,res)=>{
                 res.status(404).send(JSON.stringify({message:'not found!'}));
         })
 });
+app.get('/games/:id/events', async (req,res)=>{
+    con.query("select * from events where id_game="+req.params.id,(err,rows)=>{
+        res.status(200).send(JSON.stringify(rows));
+    })
+});
+
 app.post('/games',async (req,res)=>{
     let admin = req.body.admin;
     if(admin){
@@ -45,7 +53,7 @@ app.post('/games',async (req,res)=>{
             if(rows.length!=0){
                 let game = req.body.game;
                 if(game){
-                        con.query("insert into games values(NULL,'"+game.name+"','"+game.genre+"','"+game.description+"',0,0,"+game.id_image+")");
+                        con.query("insert into games values(NULL,'"+game.name+"','"+game.genre+"','"+game.description+"',0,0,'"+game.cover+"',"+game.id_image+")");
                         res.status(201).send(JSON.stringify({message:'created!'}));
                 }
                 else
@@ -134,7 +142,9 @@ app.get('/events/:id', async (req,res)=>{
                         con.query("select * from images where id="+gameDB.id_image,(err,rows)=>{
                             let game = gameDB;
                             game.image=rows[0];
+                            delete game.id_image;
                             event.game = game;
+                            delete event.id_location; delete event.id_game;
                             res.status(200).send(JSON.stringify(event));
                         })     
                     });
@@ -145,7 +155,7 @@ app.get('/events/:id', async (req,res)=>{
         })
 });
 
-app.get('/events/:id/location',(req,res)=>{
+app.get('/events/:id/location', async (req,res)=>{
         con.query("select * from events where id="+req.params.id,(err,rows)=>{
             if(rows.length!=0){
                 con.query("select * from locations where id="+rows[0].id_location,(err,rows)=>{
@@ -156,13 +166,13 @@ app.get('/events/:id/location',(req,res)=>{
                 res.status(404).send(JSON.stringify({message:'not found!'}));
         });
 });
-app.get('/events/:id/game',(req,res)=>{
+app.get('/events/:id/game', async (req,res)=>{
         con.query("select * from events where id="+req.params.id,(err,rows)=>{
             if(rows.length!=0){
                 con.query("select * from games where id="+rows[0].id_game,(err,rows)=>{
                     let gameDB = rows[0];
                     con.query("select * from images where id="+gameDB.id_image,(err,rows)=>{
-                        let game = gameDB;
+                        let game = gameDB; delete game.id_image;
                         game.image = rows[0];
                         res.status(200).send(JSON.stringify(game));
                     })
@@ -172,7 +182,7 @@ app.get('/events/:id/game',(req,res)=>{
                 res.status(404).send(JSON.stringify({message:'not found!'}))
         })
 });
-app.post('/events/',(req,res)=>{
+app.post('/events/', async (req,res)=>{
     let admin = req.body.admin;
     if(admin){
         con.query("select * from admins where email='"+admin.email+"' and password='"+admin.password+"'",(err,rows)=>{
@@ -192,7 +202,7 @@ app.post('/events/',(req,res)=>{
     else
         res.status(400).send(JSON.stringify({message:'failed!'}));
 });
-app.put('/events/:id',(req,res)=>{
+app.put('/events/:id', async (req,res)=>{
     let admin = req.body.admin;
     if(admin){
         con.query("select * from admins where email='"+admin.email+"' and password='"+admin.password+"'",(err,rows)=>{
@@ -219,7 +229,7 @@ app.put('/events/:id',(req,res)=>{
     else
         res.status(400).send(JSON.stringify({message:'failed!'}));
 });
-app.delete('/events/:id',(req,res)=>{
+app.delete('/events/:id', async (req,res)=>{
     let admin = req.body.admin;
     if(admin){
         con.query("select * from admins where email='"+admin.email+"' and password='"+admin.password+"'",(err,rows)=>{
