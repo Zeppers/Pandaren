@@ -19,222 +19,226 @@ var con = mysql.createConnection({
 con.connect();
 //GAMES ROUTE/////////////////////////////////////////////////////////
 app.get('/games',async (req,res)=>{
-    try{
         con.query("select * from games",(err,rows)=>{
             res.status(200).send(JSON.stringify(rows));
         });
-    }
-    catch(e){
-        console.log(e);
-        res.status(500).send(JSON.stringify({message:'server error!'}));
-    }
 });
 app.get('/games/:id',async (req,res)=>{
-    try{
         con.query("select * from games where id="+req.params.id,(err,rows)=>{
-            let game = rows[0];
-
-            if(game)
-                res.status(200).send(JSON.stringify(game));
+            let gameDB = rows[0];
+            let game = {};
+            if(gameDB){
+                game = gameDB;
+                con.query("select * from images where id="+gameDB.id_image,(err,rows)=>{
+                    game.image = rows[0];
+                    res.status(200).send(JSON.stringify(game));
+                })
+            }  
             else
                 res.status(404).send(JSON.stringify({message:'not found!'}));
         })
-    }
-    catch(e){
-        console.log(e);
-        res.status(500).send(JSON.stringify({message:'server error!'}));
-    }
 });
 app.post('/games',async (req,res)=>{
-    try{
-        let game = req.body;
-        if(game)
-            {
-                con.query("insert into games values("+game.id+",'"+game.name+"','"+game.genre+"')");
-                res.status(201).send(JSON.stringify({message:'created!'}));
+    let admin = req.body.admin;
+    if(admin){
+        con.query("select * from admins where email='"+admin.email+"' and password='"+admin.password+"'",(err,rows)=>{
+            if(rows.length!=0){
+                let game = req.body.game;
+                if(game){
+                        con.query("insert into games values(NULL,'"+game.name+"','"+game.genre+"','"+game.description+"',0,0,"+game.id_image+")");
+                        res.status(201).send(JSON.stringify({message:'created!'}));
+                }
+                else
+                    res.status(400).send(JSON.stringify({message:'failed!'}));
             }
-        else
-            res.status(400).send(JSON.stringify({message:'failed!'}));
-    }
-    catch(e){
-        console.log(e);
-        res.status(500).send(JSON.stringify({message:'server error!'}));
-    }
+            else res.status(403).send(JSON.stringify({message:'you have no authorization!'}));
+        })
+    }   
 });
 app.put('/games/:id',async (req,res)=>{
-    try{
-        let game = req.body;
-            con.query("select * from games where id="+req.params.id,(err,rows)=>{
-                if(rows.length!=0){
+    let admin = req.body.admin;
+    if(admin){
+        con.query("select * from admins where email='"+admin.email+"' and password='"+admin.password+"'",(err,rows)=>{
+            if(rows.length!=0){
+                let game = req.body.game;
+                if(game){
                     Object.keys(game).forEach(function(key,index){
                         if(typeof game[key]==="string")
                             con.query("update games set "+key+"='"+game[key]+"' where id="+req.params.id);
                         else
                             con.query("update games set "+key+"="+game[key]+" where id="+req.params.id);
                     })
-                    res.status(201).send(JSON.stringify({message:'updated!'}));
+                    res.status(202).send(JSON.stringify({message:'updated!'}));
                 }
-                else
-                    res.status(404).send(JSON.stringify({message:'not found!'}));
-            });
+                else{
+                    res.status(400).send(JSON.stringify({message:'failed!'}));
+                }
+            }
+            else
+                res.status(403).send(JSON.stringify({message:'you have no authorization!'}));
+        })
     }
-    catch(e){
-        console.log(e);
-        res.status(500).send(JSON.stringify({message:'server error!'}));
-    }
+    else
+        res.status(400).send(JSON.stringify({message:'failed!'}));  
 });
 app.delete('/games/:id', async (req,res)=>{
-    try{
-        con.query("delete from games where id="+req.params.id,(err,rows)=>{
-                if(rows.affectedRows!=0){
-                    res.status(202).send(JSON.stringify({message:'accepted!'}));
-                }
-                else
-                    res.status(404).send(JSON.stringify({message:'not found!'}));
-        });
+    let admin = req.body.admin;
+    if(admin){
+        con.query("select * from admins where email='"+admin.email+"' and password='"+admin.password+"'",(err,rows)=>{
+            if(rows.length!=0){
+                con.query("delete from games where id="+req.params.id,(err,rows)=>{
+                    if(rows.affectedRows!=0){
+                        res.status(202).send(JSON.stringify({message:'accepted!'}));
+                    }
+                    else
+                        res.status(404).send(JSON.stringify({message:'not found!'}));
+            });
+            }
+            else
+                res.status(403).send(JSON.stringify({message:'you have no authorization!'}));
+        })
     }
-    catch(e){
-        console.log(e);
-        res.status(500).send(JSON.stringify({message:'server error!'}));
-    }
+    else
+        res.status(400).send(JSON.stringify({message:'failed!'}));
+        
 });
+app.get('/games/:id/image',async (req,res)=>{
+    con.query("select * from games where id="+req.params.id,(err,rows)=>{
+        if(rows.length!=0){
+            con.query("select * from images where id="+rows[0].id_image,(err,rows)=>{
+                res.status(200).send(JSON.stringify(rows[0]));
+            });
+        }
+        else
+            res.status(404).send(JSON.stringify({message:'not found!'}));
+    });
+});
+
 //EVENTS ROUTE///////////////////////////////////////////////////////////
 app.get('/events',async (req,res)=>{
-    try{
        con.query("select * from events",(err,rows)=>{
             res.status(200).send(JSON.stringify(rows));
        })
-    }
-    catch(e){
-        console.log(e);
-        res.status(500).send(JSON.stringify({message:'server error!'}));
-    }
 });
 
 app.get('/events/:id', async (req,res)=>{
-    try{
         con.query("select * from events where id="+req.params.id,(err,rows)=>{
             let eventDB = rows[0];
             let event={};
             if(eventDB){
-                event.id=eventDB.id;
-                event.name=eventDB.name;
-                event.description = eventDB.description;
-                event.date = eventDB.date;
+                event=eventDB;
                 con.query("select * from locations where id="+eventDB.id_location,(err,rows)=>{
                     event.location = rows[0];
                     con.query("select * from games where id="+eventDB.id_game,(err,rows)=>{
-                        event.game = rows[0];
-                        res.status(200).send(JSON.stringify(event));
+                        let gameDB=rows[0];
+                        con.query("select * from images where id="+gameDB.id_image,(err,rows)=>{
+                            let game = gameDB;
+                            game.image=rows[0];
+                            event.game = game;
+                            res.status(200).send(JSON.stringify(event));
+                        })     
                     });
                 });    
             }
             else
                 res.status(404).send(JSON.stringify({message:'not found!'}));
         })
-    }
-    catch(e){
-        console.log(e);
-        res.status(500).send(JSON.stringify({message:'server error!'}));
-    }
 });
 
 app.get('/events/:id/location',(req,res)=>{
-    try{
         con.query("select * from events where id="+req.params.id,(err,rows)=>{
-            if(rows.length){
+            if(rows.length!=0){
                 con.query("select * from locations where id="+rows[0].id_location,(err,rows)=>{
                     res.status(200).send(JSON.stringify(rows[0]));
                 });
             }
             else
-                res.status(500).send(JSON.stringify({message:'not found!'}));
+                res.status(404).send(JSON.stringify({message:'not found!'}));
         });
-    }
-    catch(e){
-        console.log(e);
-        res.status(500).send(JSON.stringify({message:'server error!'}));
-    }
 });
 app.get('/events/:id/game',(req,res)=>{
-    try{
         con.query("select * from events where id="+req.params.id,(err,rows)=>{
             if(rows.length!=0){
                 con.query("select * from games where id="+rows[0].id_game,(err,rows)=>{
-                    res.status(200).send(JSON.stringify(rows[0]));
+                    let gameDB = rows[0];
+                    con.query("select * from images where id="+gameDB.id_image,(err,rows)=>{
+                        let game = gameDB;
+                        game.image = rows[0];
+                        res.status(200).send(JSON.stringify(game));
+                    })
                 })
             }
             else
                 res.status(404).send(JSON.stringify({message:'not found!'}))
         })
-    }
-    catch(e){
-        console.log(e);
-        res.status(500).send(JSON.stringify({message:'server error!'}));
-    }
 });
 app.post('/events/',(req,res)=>{
-    try{
-        let event = req.body;
-        if(event){
-            con.query("insert into events values("+event.id+",'"+event.name+"','"+event.description+"',"+event.id_location+","+event.id_game+","+event.id_admin+",'"+event.date+"')");
-            res.status(201).send(JSON.stringify({message:'created!'}));
-        }
-        else
-            res.status(400).send(JSON.stringify({message:'failed!'}));
-    }catch(e){
-        console.log(e);
-        res.status(500).send(JSON.stringify({message:'server error!'}));
+    let admin = req.body.admin;
+    if(admin){
+        con.query("select * from admins where email='"+admin.email+"' and password='"+admin.password+"'",(err,rows)=>{
+            if(rows.length!=0){
+                let event = req.body.event;
+                if(event){
+                    con.query("insert into events values(NULL,'"+event.name+"','"+event.description+"',"+event.id_location+","+event.id_game+",'"+event.date+"')");
+                    res.status(201).send(JSON.stringify({message:'created!'}));
+                }
+                else
+                    res.status(400).send(JSON.stringify({message:'failed!'}));
+            }
+            else
+                res.status(403).send(JSON.stringify({message:'you have no authorization!'}));
+        })
     }
+    else
+        res.status(400).send(JSON.stringify({message:'failed!'}));
 });
 app.put('/events/:id',(req,res)=>{
-    try{
-        
+    let admin = req.body.admin;
+    if(admin){
+        con.query("select * from admins where email='"+admin.email+"' and password='"+admin.password+"'",(err,rows)=>{
+            if(rows.length!=0){
+                let event=req.body.event;
+                con.query("select * from events where id="+ req.params.id,(err,rows) =>{
+                    if(rows.length!=0){
+                        Object.keys(event).forEach(function (key,index){
+                            if(typeof event[key]==="string") 
+                                con.query("update events set "+key+"='"+event[key]+"' where id="+req.params.id);
+                            else
+                                con.query("update events set "+key+"="+event[key]+" where id="+req.params.id);
+                         }) 
+                        res.status(202).send(JSON.stringify({message:'updated!'}));
+                    }
+                    else
+                        res.status(404).send(JSON.stringify({message:'not found!'}));
+                });
+            }
+            else
+                res.status(403).send(JSON.stringify({message:'you have no authorization!'}));
+        })
     }
-    catch(e){
-        console.log(e);
-        res.status(500).send(JSON.stringify({message:'server error!'}));
-    }
+    else
+        res.status(400).send(JSON.stringify({message:'failed!'}));
 });
 app.delete('/events/:id',(req,res)=>{
-    try{
-        con.query("delete from events where id="+req.params.id,(err,rows)=>{
-            if(rows.affectedRows!=0)
-                res.status(202).send(JSON.stringify({message:'accepted!'}));
+    let admin = req.body.admin;
+    if(admin){
+        con.query("select * from admins where email='"+admin.email+"' and password='"+admin.password+"'",(err,rows)=>{
+            if(rows.length!=0){
+                con.query("delete from events where id="+req.params.id,(err,rows)=>{
+                    if(rows.affectedRows!=0)
+                        res.status(202).send(JSON.stringify({message:'accepted!'}));
+                    else
+                        res.status(404).send(JSON.stringify({message:'not found'}));
+                });
+            }
             else
-                res.status(404).send(JSON.stringify({message:'not found'}));
-        });
+                res.status(403).send(JSON.stringify({message:'you have no authorization!'}));
+        })
     }
-    catch(e){
-        console.log(e);
-        res.status(500).send(JSON.stringify({message:'server error!'}));
-    }
+    else
+        res.status(400).send(JSON.stringify({message:'failed!'}));     
 });
 app.listen(8000,()=>{
     console.log('server listening on port 8000...');
 });
-
-function Location(id, name, capacity){
-    this.id = id;
-    this.name = name;
-    this.capacity = capacity;
-}
-function Event(id,name,description,location,game){
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.location = location;
-    this.game = game;
-}
-function Game(id, name, genre){
-    this.id = id;
-    this.name = name;
-    this.genre = genre;
-}
-function Admin(email, name, password, events){
-    this.email = email;
-    this.name = name;
-    this.password = password;
-    this.events = events;
-}
 
