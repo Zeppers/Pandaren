@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Staatliches');
+
+body{
+    background:#2C2C2C;
+    color:#F7E753;
+}
+
+#sign_in_container {
+
+    width: 660px;
+    height: 600px;
+    background: #2c2c2c;
+    margin:auto auto;
+    margin-top:3%;
+    margin-bottom: auto;
+    box-shadow: 0px 0px 80px 0px rgba(0,0,0,0.3);
+}
+
+#question {
+    font-size: 3vw;
+    font-family: "Staatliches";
+    padding-top:60px;
+    padding-left:40px;
+    
+}
+#text_info {
+    font-family: "Open Sans";
+    font-size: 1vw;
+    color: #E2E2E2;
+    padding-left:40px;
+    padding-right: 40px;
+}

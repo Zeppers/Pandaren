@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans|Staatliches');
 
-    
 @media screen and (max-width: 600px) {
 
     #games_boxes {
@@ -10,6 +9,10 @@
         display: grid;
         grid-template-columns: repeat(2,1fr);
     }
+}
+
+a{
+    color:#F7E753;
 }
 
 body
@@ -28,13 +31,15 @@ body
     position: absolute;
     top:0;
     right:0;
-    width: 40%;
+    width: 50%;
+    opacity: 0.8;
 }
 
 #logo_container {
     width: 165px;
     height: 70px;
     padding-left: 5%;
+    padding-top: 2%;
 }
 
 #logo_container img {
