@@ -21,11 +21,11 @@
 
         <div id="first_layout_photo">
 
+            
+            
+            
             <div id="effect_layer"></div>
-<!-- 
-            <div id="game_site">
-                <img id="ic_arrow_right" src="res/ic_go_right.png">
-            </div> -->
+
 
         </div>
             
@@ -39,13 +39,47 @@
                 
                     <div id="header">Game description</div>
                     <div id="game_name"> Dota 2</div>
-                    <div id="game_genre">RPG</div>
-                    <div id="game_year">2012</div>
+                    <span id="game_genre">RPG</span>
+                    <span id="game_year">2012</span>
+                    <div id="score_area">
+                        <span>Average score: </span>
+                        <span id="game_score">4.50</span>
+                    </div>
+                    
 
                     <div id="game_description">
                         Dota 2 is a multiplayer online battle arena (MOBA) video game developed and published by Valve Corporation. Dota 2 is played in matches between two teams of five players, with each team occupying and defending their own separate base on the map. Each of the ten players independently controls a powerful character, known as a "hero", who all have unique abilities and differing styles of play.
                     </div>
- 
+
+                    <div id="rating_area">
+                        <div id="rating_checkboxes">
+                            <p>Rate this game (from 1 to 5):</p>
+                            <span id="grid_ratings">
+                                <label id="rating_container_1" style="padding-left: 0px;">
+                                        <input type="radio" checked="checked" name="radio" >
+                                        <!-- <span class="checkmark"></span> -->
+                                </label>
+                                <label id="rating_container_2">
+                                        <input type="radio" checked="checked" name="radio">
+                                        <!-- <span class="checkmark"></span> -->
+                                </label>
+                                <label id="rating_container_3">
+                                        <input type="radio" checked="checked" name="radio">
+                                        <!-- <span class="checkmark"></span> -->
+                                </label>
+                                <label id="rating_container_4">
+                                        <input type="radio" checked="checked" name="radio">
+                                        <!-- <span class="checkmark"></span> -->
+                                </label>
+                                <label id="rating_container_5">
+                                        <input type="radio" checked="checked" name="radio">
+                                        <!-- <span class="checkmark"></span> -->
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div id="create_event"> <a href="create_event.html">Create an event with this game</a></div>
                 </div>
 
         </div>
@@ -58,38 +92,45 @@
 
             <div id="third_text_area">
                 
-                <div id="header">Available events</div>
+                <div id="third_header">Available events</div>
+                <div id="rating_info">Check the event if you are interested.</div>
                 <nav>
-                    <ul id="">
+                    <ul id="games_list">
                         <li>
-                            <span id="event_name">Gamescon 2018</span>
-                            <span id="event_date">10-11-2019, 10:00</span>
+                            <div id="ic_checked">
+                                <img src="res/ic_interested_checked.png">
+                            </div>
+                            <div id="event_name">Gamescon 2018</div>
+                            <div id="event_date">10-11-2019, 10:00</div>
                             <div id="event_location">Nexus, Bucuresti</div>
                             <div id="event_description">First Battlecup for non-professional teams.</div>
                         </li>
                         <li>
-                            <span id="event_name">Gamescon 2018</span>
-                            <span id="event_date">10-11-2019, 10:00</span>
+                                <div id="ic_checked">
+                                    <img src="res/ic_interested_unchecked.png">
+                                </div>
+                                <div id="event_name">Gamescon 2018</div>
+                                <div id="event_date">10-11-2019, 10:00</div>
+                                <div id="event_location">Nexus, Bucuresti</div>
+                                <div id="event_description">First Battlecup for non-professional teams.</div>
+                        </li>
+                         <li>
+                            <div id="ic_checked">
+                                <img src="res/ic_interested_unchecked.png">
+                            </div>
+                            <div id="event_name">Gamescon 2018</div>
+                            <div id="event_date">10-11-2019, 10:00</div>
                             <div id="event_location">Nexus, Bucuresti</div>
                             <div id="event_description">First Battlecup for non-professional teams.</div>
                         </li>
                         <li>
-                            <span id="event_name">Gamescon 2018</span>
-                            <span id="event_date">10-11-2019, 10:00</span>
-                            <div id="event_location">Nexus, Bucuresti</div>
-                            <div id="event_description">First Battlecup for non-professional teams.</div>
-                        </li>
-                        <li>
-                            <span id="event_name">Gamescon 2018</span>
-                            <span id="event_date">10-11-2019, 10:00</span>
-                            <div id="event_location">Nexus, Bucuresti</div>
-                            <div id="event_description">First Battlecup for non-professional teams.</div>
-                        </li>
-                        <li>
-                            <span id="event_name">Gamescon 2018</span>
-                            <span id="event_date">10-11-2019, 10:00</span>
-                            <div id="event_location">Nexus, Bucuresti</div>
-                            <div id="event_description">First Battlecup for non-professional teams.</div>
+                                <div id="ic_checked">
+                                    <img src="res/ic_interested_unchecked.png">
+                                </div>
+                                <div id="event_name">Gamescon 2018</div>
+                                <div id="event_date">10-11-2019, 10:00</div>
+                                <div id="event_location">Nexus, Bucuresti</div>
+                                <div id="event_description">First Battlecup for non-professional teams.</div>
                         </li>
                     </ul>
                 </nav>
