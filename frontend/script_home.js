@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', function(){
    
-   
-   
     let http = new XMLHttpRequest();
     http.open('get','http://188.25.199.62:3000/games',true);
     http.setRequestHeader('Content-type', 'application/json');
