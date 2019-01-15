@@ -8,19 +8,46 @@
 </head>
 <body>
 
+    <div id="bg_texture">
+            <img src="res/videogame_texture.png">
+    </div>
+
     <div id="sign_in_container">
-         <div id="text_area">
+        <div id="ic_close_container">
+            <img id="ic_close" src="res/ic_close.png">
+        </div>
+        <div id="text_area">
             <div id="question">Got an account?</div>
-            <br>
-            <br>
             <div id="text_info">
-                <b>Is so, that's great! </b> Sign in to rate events and join, or to create if you organize stuff.
+                <b>Is so, that's great! </b> Sign in to rate events and join them, or to create one if you organize stuff.
             </div>
+
+        <div id="form_fields">
+
+        <form>
+            <input type="text" name="email" value="" placeholder="Email address"><br>
+            <input type="text" name="password" value="" placeholder="Password">
+        </form>
+
+        <div id="forgot_password">
+            <a href="""><b>Ooops</b>,I forgot my password</a></div>
+        </div>   
 
         </div>
 
+        <div id="sign_in_btn" onclick="">
+            <button id="btn_sign_in" type="button"><b>Sign in</b></button>
+           
+        </div>
 
+        <div id="register_btn">
+            <p>Still got no account?</p>
+            <button id="btn_register" type="button">Register</button> 
+        </div>
 
+        
+
+        
     </div>
 
 </body>
